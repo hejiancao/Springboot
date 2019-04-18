@@ -1,6 +1,7 @@
 package cn.sen.springboot;
 
 import cn.sen.springboot.configration.Person;
+import cn.sen.springboot.configration.Person2;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,14 @@ public class Demo02ApplicationTests {
 
 	@Autowired
 	private Person person;
+	@Autowired
+	private Person2 person2;
 
 	@Test
 	public void contextLoads() {
-		System.out.println(person);
+//		System.out.println(person);
+		System.out.println(person2);
 	}
+
 
 }
