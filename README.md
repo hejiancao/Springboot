@@ -24,3 +24,8 @@ ctrl + F9 重新编译之后，重新访问<br/>
     <artifactId>spring-boot-configuration-processor</artifactId>
 </dependency>
 ```
+
+## @PropertySource
+用来指定配置文件
+## @ImportResource
+导入spring配置文件
