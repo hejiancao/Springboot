@@ -7,9 +7,9 @@ https://docs.spring.io/spring-boot/docs/2.1.0.BUILD-SNAPSHOT/reference/htmlsingl
 
 ```
 <dependency>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-devtools</artifactId>
-		<optional>true</optional>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-devtools</artifactId>
+	<optional>true</optional>
 </dependency>
 ```
 intellij idea需要修改一些配置，详见https://blog.csdn.net/hz_940611/article/details/80594788<br/>
