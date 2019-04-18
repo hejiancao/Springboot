@@ -25,6 +25,8 @@ ctrl + F9 重新编译之后，重新访问<br/>
 </dependency>
 ```
 
+## @ConfigurationProperties
+将yml配置文件中的属性和对象中的属性关联起来
 ## @PropertySource
 用来指定配置文件
 ## @ImportResource
