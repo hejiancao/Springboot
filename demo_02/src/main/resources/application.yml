@@ -1,0 +1,10 @@
+person:
+  name: sen
+  age: 18
+  boss: false
+  map: {key1: val1, key2: val2}
+  list: [1,2,3]
+  dog:
+    name: snoby
+    age: 3
+
