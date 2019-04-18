@@ -31,3 +31,24 @@ ctrl + F9 重新编译之后，重新访问<br/>
 用来指定配置文件
 ## @ImportResource
 导入spring配置文件
+
+## 配置文件profiles
+指定配置文件<br/>
+对于只有一个yml配置文件，可以通过下面这种方式
+```
+spring:
+  profiles:
+    active: pro
+
+---
+server:
+  port: 8083
+spring:
+  profiles: dev
+
+---
+server:
+  port: 8084
+spring:
+  profiles: pro
+```
