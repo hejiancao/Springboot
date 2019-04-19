@@ -52,3 +52,7 @@ server:
 spring:
   profiles: pro
 ```
+
+## spring.factories
+spring-boot-autoconfigurate-xxx.release.jar<br/>
+核心配置文件
