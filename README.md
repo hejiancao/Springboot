@@ -1,4 +1,4 @@
-# Springboot
+# SpringBoot
 springboot练习
 
 ## springboot如何实现热部署
@@ -24,3 +24,35 @@ ctrl + F9 重新编译之后，重新访问<br/>
     <artifactId>spring-boot-configuration-processor</artifactId>
 </dependency>
 ```
+
+## @ConfigurationProperties
+将yml配置文件中的属性和对象中的属性关联起来
+## @PropertySource
+用来指定配置文件
+## @ImportResource
+导入spring配置文件
+
+## 配置文件profiles
+指定配置文件<br/>
+对于只有一个yml配置文件，可以通过下面这种方式
+```
+spring:
+  profiles:
+    active: pro
+
+---
+server:
+  port: 8083
+spring:
+  profiles: dev
+
+---
+server:
+  port: 8084
+spring:
+  profiles: pro
+```
+
+## spring.factories
+spring-boot-autoconfigurate-xxx.release.jar<br/>
+核心配置文件
