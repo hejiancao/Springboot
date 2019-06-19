@@ -1,0 +1,17 @@
+student:
+  name: sen
+  age: 18
+  number:  ${random.int}
+  uuid : ${random.uuid}
+  max: ${random.int(10)}
+  value: ${random.value}
+  greeting: hi,i'm  ${student.name}
+
+
+spring:
+  profiles:
+    active: dev
+
+
+
+
