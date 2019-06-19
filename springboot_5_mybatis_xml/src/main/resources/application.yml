@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=gbk&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT
+    username: root
+    password: 123456
+
+mybatis:
+  #指明和数据库映射的实体的所在包
+  type-aliases-package: com.example.demo.entity
+  ##指明mapper的xml文件存放位置
+  mapper-locations: classpath:mybatis/*.xml
+
+
