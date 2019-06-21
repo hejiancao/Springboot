@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.entity.PersonForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,7 +40,13 @@ public class WebController extends WebMvcConfigurerAdapter {
      * @date 2019/6/21 10:32
      */
     @PostMapping("/check")
-    public String checkWithPostman(@RequestBody @Valid PersonForm personForm) {
+    public String checkWithPostman(@RequestBody @Valid PersonForm personForm, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            for (ObjectError objectError : bindingResult.getAllErrors()) {
+                System.out.println(objectError.toString());
+            }
+
+        }
         return "redirect:/results";
     }
 }
