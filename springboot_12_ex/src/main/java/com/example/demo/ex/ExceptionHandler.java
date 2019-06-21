@@ -20,8 +20,8 @@ public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(value = Exception.class)
     @ResponseBody
     public RespResult handle(Exception e) {
-        if (e instanceof AIWAYSException) {
-            AIWAYSException ex = (AIWAYSException) e;
+        if (e instanceof AiwaysException) {
+            AiwaysException ex = (AiwaysException) e;
             return RespResultUtils.returnJson(ex.getCode(), ex.getMessage(), e.getCause());
         } else {
             log.error("[系统异常] :" + ExceptionUtils.getStackTrace(e));

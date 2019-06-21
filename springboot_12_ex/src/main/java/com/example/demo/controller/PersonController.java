@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.PersonForm;
-import com.example.demo.ex.AIWAYSException;
 import com.example.demo.utils.RespResult;
 import com.example.demo.utils.RespResultUtils;
 import org.springframework.validation.BindingResult;
@@ -31,7 +30,7 @@ public class PersonController {
         if (bindingResult.hasErrors()) {
             for (ObjectError objectError : bindingResult.getAllErrors()) {
                 return RespResultUtils.failure(objectError.toString());
-//                throw new AIWAYSException(objectError.getDefaultMessage());
+//                throw new AiwaysException(objectError.getDefaultMessage());
             }
 
         }
