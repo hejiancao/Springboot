@@ -1,11 +1,10 @@
 package com.example.demo.service;
 
-import com.example.demo.dao.AccountJPA;
+import com.example.demo.dao.AccountRepository;
 import com.example.demo.entity.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 
 /**
@@ -16,7 +15,7 @@ import org.springframework.util.StringUtils;
 public class AccountServiceImpl implements AccountService {
 
     @Autowired
-    private AccountJPA accountJPA;
+    private AccountRepository accountRepository;
 
     @Override
     public Page<Account> findAll(Account account, Pageable pageable) {
@@ -38,7 +37,7 @@ public class AccountServiceImpl implements AccountService {
                 // 目前似乎不支持大小比较
 
         Example<Account> example = Example.of(account,exampleMatcher);
-        Page<Account> page = accountJPA.findAll(example, pageable);
+        Page<Account> page = accountRepository.findAll(example, pageable);
         return page;
     }
 }
