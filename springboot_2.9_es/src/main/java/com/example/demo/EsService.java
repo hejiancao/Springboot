@@ -12,15 +12,19 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.MultiSearchResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -39,14 +43,55 @@ public class EsService {
 
     private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-    private String INDEX_NAME = "api-test";
-    private String TYPE_NAME = "v1";
+    private String index = "api-test";
+    private String type = "v1";
 
     private TransportClient client;
 
     public EsService(TransportClient client) {
         this.client = client;
     }
+
+
+
+    /**组合查询
+     * @author shaos
+     * @date 2020/1/9 10:09
+     */
+    public void boolQuery() {
+        int pageSize = 1000;
+        QueryBuilder queryBuilder = QueryBuilders.boolQuery()
+                .must(QueryBuilders.matchQuery("tenantId", "111"))
+                .must(QueryBuilders.matchQuery("vin", "111"))
+                .must(QueryBuilders.matchQuery("batteryPackCode", "111"))
+                .must(QueryBuilders.rangeQuery("collectTime").gt("2020-01-02").lt("2020-01-03"));
+        SearchResponse response = client.prepareSearch(index).setTypes(type)
+                .setQuery(queryBuilder)
+                .setSearchType(SearchType.DEFAULT).setSize(pageSize).setScroll(TimeValue.timeValueMinutes(1))
+                .addSort("time", SortOrder.DESC)
+                .execute()
+                .actionGet();
+    }
+
+
+
+
+
+    /**统计
+     * @author shaos
+     * @date 2020/1/9 10:03
+     */
+    public long count() {
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
+                .must(QueryBuilders.matchQuery("tenantId", "11111"))
+                .must(QueryBuilders.rangeQuery("collectTime").gt("2020-01-02").lt("2020-01-03"));
+        long totalRows = client.prepareSearch(index).setTypes(type)
+                .setQuery(boolQueryBuilder)
+                .setSize(0)
+                .get().getHits().getTotalHits();
+        return totalRows;
+    }
+
 
 
     /** 添加索引json
@@ -58,7 +103,7 @@ public class EsService {
         json.put("user", "kimchy");
         json.put("postDate", new Date());
         json.put("message", "trying out Elasticsearch");
-        IndexResponse response = client.prepareIndex(INDEX_NAME, TYPE_NAME, "1")
+        IndexResponse response = client.prepareIndex(index, type, "1")
                 .setSource(json, XContentType.JSON).get();
 
         LOGGER.info("index:{}", response.getIndex());
@@ -80,7 +125,7 @@ public class EsService {
                 .field("postDate", new Date())
                 .field("message", "trying out Elasticsearch")
                 .endObject();
-        IndexResponse response = client.prepareIndex(INDEX_NAME, TYPE_NAME, "1")
+        IndexResponse response = client.prepareIndex(index, type, "1")
                 .setSource(json).get();
 
         LOGGER.info("index:{}", response.getIndex());
@@ -97,7 +142,7 @@ public class EsService {
      * @date 2019/11/11 16:55
      */
     public void get() {
-        GetResponse response = client.prepareGet(INDEX_NAME, TYPE_NAME, "1").get();
+        GetResponse response = client.prepareGet(index, type, "1").get();
         Map<String, Object> source = response.getSource();
         String sourceAsString = response.getSourceAsString();
         LOGGER.info(sourceAsString);
@@ -113,7 +158,7 @@ public class EsService {
 //                .add("twitter", "tweet", "1")
 //                .add("twitter", "tweet", "2", "3", "4")
 //                .add("another", "type", "foo")
-                .add(INDEX_NAME, TYPE_NAME, "1")
+                .add(index, type, "1")
                 .get();
 
         for (MultiGetItemResponse itemResponse : multiGetItemResponses) {
@@ -189,7 +234,7 @@ public class EsService {
      * @date 2019/11/11 16:58
      */
     public void delete() {
-        DeleteResponse response = client.prepareDelete(INDEX_NAME, TYPE_NAME, "1").get();
+        DeleteResponse response = client.prepareDelete(index, type, "1").get();
         LOGGER.info("status:{}", response.status());
     }
 
@@ -200,7 +245,7 @@ public class EsService {
     public void deleteByQuery() {
         BulkByScrollResponse response = DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
                 .filter(QueryBuilders.matchQuery("user", "kimchy"))
-                .source(INDEX_NAME)
+                .source(index)
                 .get();
         long deleted = response.getDeleted();
     }
@@ -212,7 +257,7 @@ public class EsService {
     public void deleteByQueryAsyn() {
         DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
                 .filter(QueryBuilders.matchQuery("user", "kimchy"))
-                .source(INDEX_NAME)
+                .source(index)
                 .execute(new ActionListener<BulkByScrollResponse>() {
                     @Override
                     public void onResponse(BulkByScrollResponse response) {
@@ -231,7 +276,7 @@ public class EsService {
      * @date 2019/11/11 17:25
      */
     public void update() throws Exception {
-        UpdateRequest updateRequest = new UpdateRequest(INDEX_NAME, TYPE_NAME, "1")
+        UpdateRequest updateRequest = new UpdateRequest(index, type, "1")
                 .doc(jsonBuilder()
                         .startObject()
                         .field("user", "shaos")
@@ -251,7 +296,7 @@ public class EsService {
         BulkRequestBuilder bulkRequest = client.prepareBulk();
 
         // either use client#prepare, or use Requests# to directly build index/delete requests
-        bulkRequest.add(client.prepareIndex(INDEX_NAME, TYPE_NAME, "1")
+        bulkRequest.add(client.prepareIndex(index, type, "1")
                 .setSource(jsonBuilder()
                         .startObject()
                         .field("user", "kimchy")
@@ -261,7 +306,7 @@ public class EsService {
                 )
         );
 
-        bulkRequest.add(client.prepareIndex(INDEX_NAME, TYPE_NAME, "2")
+        bulkRequest.add(client.prepareIndex(index, type, "2")
                 .setSource(jsonBuilder()
                         .startObject()
                         .field("user", "kimchy")
