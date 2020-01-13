@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.cluster.node.DiscoveryNode;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 
 /** es配置
  * @author shaos
@@ -34,13 +36,22 @@ public class EsConfiguration {
     @Bean
     public TransportClient client() throws UnknownHostException {
 
+        // 自动嗅探整个集群的状态，把集群中其他ES节点的ip添加到本地的客户端列表中
         Settings settings = Settings.builder()
-                .put("cluster.name", esClusterName).build();
+                .put("cluster.name", esClusterName)
+                .put("client.transport.sniff", true)
+                .build();
 
+        // 此步骤添加 IP ，至少一个，其实一个就够了，因为添加了自动嗅探配置
         TransportClient client = new PreBuiltTransportClient(settings)
-//                .addTransportAddress(new TransportAddress(InetAddress.getByName("host1"), 9300))
                 .addTransportAddress(new TransportAddress(InetAddress.getByName(esHost), esPort));
-        logger.info("======= elasticsearch 启动成功！=======");
+        logger.info("##elasticsearch 启动成功!##");
+
+        List<DiscoveryNode> discoveryNodes = client.connectedNodes();
+        for (DiscoveryNode node : discoveryNodes) {
+            logger.info("##集群节点信息：##");
+            logger.info(node.getHostAddress());
+        }
         return client;
 
     }
