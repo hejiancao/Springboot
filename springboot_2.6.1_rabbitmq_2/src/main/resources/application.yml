@@ -1,0 +1,17 @@
+
+server:
+  port: 8888
+
+spring:
+  rabbitmq:
+    addresses: 10.100.2.92:5672,10.100.81.151:5672
+    username: dev_power
+    password: Pass1234
+    virtual-host: power
+#    listener:
+#        direct:
+#            acknowledge-mode: manual
+#        simple:
+#            acknowledge-mode: manual
+    publisher-confirms: true
+    publisher-returns: true

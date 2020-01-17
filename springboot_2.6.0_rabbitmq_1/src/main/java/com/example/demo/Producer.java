@@ -18,7 +18,7 @@ public class Producer {
     private AmqpTemplate amqpTemplate;
 
     public void send() {
-        String msg = "这是一条测试消息！！！！！！！！！！";
+        String msg = "##春节大吉##";
         amqpTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY, msg);
     }
 }
