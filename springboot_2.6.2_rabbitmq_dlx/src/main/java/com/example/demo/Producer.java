@@ -8,6 +8,9 @@ import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static com.example.demo.Constants.ORDER_EXCHANGE_NAME;
+import static com.example.demo.Constants.ORDER_ROUTING_KEY;
+
 /**
  * @author created by shaos on 2019/8/16
  */
@@ -24,11 +27,11 @@ public class Producer {
             MessageProperties messageProperties = message.getMessageProperties();
             // 设置编码
             messageProperties.setContentEncoding("utf-8");
-            // 设置过期时间10*1000毫秒
+            // 设置过期时间5*1000毫秒
             messageProperties.setExpiration("5000");
             return message;
         };
-        amqpTemplate.convertAndSend("order.exchange", "order.test", "==========订单发送=========", messagePostProcessor);
+        amqpTemplate.convertAndSend(ORDER_EXCHANGE_NAME, ORDER_ROUTING_KEY, "订单号：2020011913375374", messagePostProcessor);
     }
 
 }

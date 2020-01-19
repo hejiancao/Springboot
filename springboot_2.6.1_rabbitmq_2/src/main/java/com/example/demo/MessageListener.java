@@ -19,7 +19,7 @@ public class MessageListener implements ChannelAwareMessageListener {
     public void onMessage(Message message, Channel channel) throws Exception {
         try {
 
-            int a = 1/0;
+//            int a = 1/0;
 
             /**1.通过basic.qos方法设置prefetch_count=1，这样RabbitMQ就会使得每个Consumer在同一个时间点最多处理一个Message，
              换句话说,在接收到该Consumer的ack前,它不会将新的Message分发给它.

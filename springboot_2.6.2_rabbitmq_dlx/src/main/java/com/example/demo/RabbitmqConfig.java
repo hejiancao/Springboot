@@ -25,21 +25,25 @@ public class RabbitmqConfig {
     @Autowired
     private CachingConnectionFactory connectionFactory;
 
-    @Bean
+    @Bean("queue")
     public Queue queue() {
         Map<String, Object> arguments = new HashMap<String, Object>();
-        // 为队列设置队列交换器
+        // 当消息变成死信时路由到的交换机
+        // 消息变成死信一般由于以下几种情况：
+        //1. 消息被拒绝（Basic.Reject/Basic.Nack）且不重新投递（requeue=false）
+        //2.消息过期
+        //3.队列达到最大长度
         arguments.put("x-dead-letter-exchange", Constants.DLX_EXCHANGE_NAME);
         return new Queue(Constants.ORDER_QUEUE_NAME, true, false, false, arguments);
     }
 
-    @Bean
+    @Bean("exchange")
     public TopicExchange exchange() {
         return new TopicExchange(Constants.ORDER_EXCHANGE_NAME);
     }
 
     @Bean
-    public Binding bindingExchange(Queue queue, TopicExchange exchange) {
+    public Binding bindingExchange(@Qualifier("queue") Queue queue, @Qualifier("exchange") TopicExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(Constants.ORDER_ROUTING_KEY);
     }
 
@@ -53,6 +57,7 @@ public class RabbitmqConfig {
     }
     @Bean
     public Binding bindingDlxExchange(@Qualifier("dlxQueue") Queue dlxQueue, @Qualifier("dlxExchange") TopicExchange dlxExchange) {
+        // routingKey必须是#
         return BindingBuilder.bind(dlxQueue).to(dlxExchange).with("#");
     }
 

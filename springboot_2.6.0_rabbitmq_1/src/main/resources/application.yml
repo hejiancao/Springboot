@@ -8,10 +8,12 @@ spring:
     username: dev_power
     password: Pass1234
     virtual-host: power
+    #消费确认
     listener:
         direct:
             acknowledge-mode: manual
         simple:
             acknowledge-mode: manual
-    publisher-confirms: true
-    publisher-returns: true
+    #发布者确认
+#    publisher-confirms: true
+#    publisher-returns: true
