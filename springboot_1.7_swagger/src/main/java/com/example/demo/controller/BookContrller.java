@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Book;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +18,7 @@ import java.util.*;
  * 用户获取某一图书  GET /Books/:id
  * 官方文档：http://swagger.io/docs/specification/api-host-and-base-path/
  */
+@Api(tags = "图书管理")
 @RestController
 @RequestMapping(value = "/books")
 public class BookContrller {
